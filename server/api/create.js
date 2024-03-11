@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       message: `Your link has been created! Your slug is ${slug}.`,
-      uri: slug
+      url: `https://dm.link/${slug}`
     }
   } catch (err) {
     return {

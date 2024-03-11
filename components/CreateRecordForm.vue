@@ -18,11 +18,11 @@
       <XMarkIcon @click="show.success = false" class="absolute top-4 right-4 h-6 w-6 hover:text-red-800 opacity-50 cursor-pointer"/>
       <h2>Link proxy created</h2>
       <p>Your link is ready to use. Share it with your friends.</p>
-      <a :href="show.uri"
+      <a :href="show.url"
           class="text-blue-600 hover:underline cursor-pointer"
           target="_blank"
           rel="noopener noreferrer"
-      >{{ show.uri }}</a>
+      >{{ show.url }}</a>
     </section>
   </div>
 </template>
@@ -43,7 +43,7 @@ const form = reactive({
 
 const show = reactive({
   success: false,
-  uri: ''
+  url: ''
 });
 
 const state = reactive({
@@ -99,7 +99,7 @@ const submitForm = async () => {
           }
           flash.addMessage({type: 'success', message: response.message});
           show.success = true;
-          show.uri = `https://dm.link/${response.uri}`;
+          show.url = response.url;
           return ClearForm();
         })
         .catch(error => {
