@@ -19,13 +19,19 @@ export default defineEventHandler(async (event) => {
   // create a new record
   const slug = body.slug.toLowerCase().replace(/\s/g, '-');
   const stmt2 = db.prepare('INSERT INTO records (slug, user) VALUES (?, ?)');
-  const newRecord = await stmt2.run(slug, body.user);
 
-  // return the slug
-  return {
-    success: true,
-    message: `Your record has been created! Your slug is ${slug}.`,
-    uri: slug
-  };
+  try {
+    await stmt2.run(slug, body.user);
+    return {
+      success: true,
+      message: `Your link has been created! Your slug is ${slug}.`,
+      uri: slug
+    }
+  } catch (err) {
+    return {
+      success: false,
+      message: `There was an error creating your link: ${err.message}`
+    };
+  }
 
 })
