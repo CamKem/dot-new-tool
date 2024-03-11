@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="max-w-2xl">
     <form @submit.prevent="submitForm">
       <h1>Create new DM link</h1>
       <div class="input-container">
@@ -34,20 +34,24 @@ const state = reactive({
 });
 
 const checkSlug = async () => {
-  await $fetch(`/api/check-slug/${form.slug}`)
-    .then(response => {
-      if (response.exists) {
-        state.available = false;
-        state.unavailable = true;
-      } else {
-        state.available = true;
-        state.unavailable = false;
-      }
-    })
-    .catch(error => {
-      console.error('error:', error);
-      flash.addMessage({type: 'error', message: 'An error occurred while checking the slug.'});
-    });
+  if (form.slug.length > 0) {
+    await $fetch(`/api/check-slug/${form.slug}`)
+      .then(response => {
+        if (response.exists) {
+          state.available = false;
+          state.unavailable = true;
+        } else {
+          state.available = true;
+          state.unavailable = false;
+        }
+      })
+      .catch(error => {
+        console.error('error:', error);
+        flash.addMessage({type: 'error', message: 'An error occurred while checking the slug.'});
+      });
+  } else {
+    clearFlags();
+  }
 };
 
 const checkSlugDebounced = debounce(checkSlug, 300);
@@ -102,7 +106,7 @@ form {
 }
 
 .input-container {
-  @apply relative;
+  @apply relative w-full;
 }
 
 input::placeholder {
