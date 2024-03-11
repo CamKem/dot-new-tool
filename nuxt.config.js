@@ -1,5 +1,5 @@
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
+  devtools: { enabled: true },
   head: {
     title: 'dot-new-tool',
     htmlAttrs: {
