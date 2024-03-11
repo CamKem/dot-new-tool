@@ -1,8 +1,8 @@
 import db from '../../../database/db';
 
 export default defineEventHandler(async (event) => {
-  const slug = getRouterParam(event, 'slug');
-  const stmt = db.prepare('SELECT slug, user FROM records WHERE slug = ?');
+  const slug = getRouterParam(event, 'slug').toLowerCase();
+  const stmt = db.prepare('SELECT user FROM records WHERE slug = ?');
   const record = await stmt.get(slug);
 
   return {
