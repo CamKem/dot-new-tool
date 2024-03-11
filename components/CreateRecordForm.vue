@@ -52,6 +52,17 @@ const checkSlug = async () => {
 
 const checkSlugDebounced = debounce(checkSlug, 300);
 
+const clearFlags = () => {
+  state.available = false;
+  state.unavailable = false;
+};
+
+const ClearForm = () => {
+  form.slug = '';
+  form.user = '';
+  clearFlags();
+};
+
 const submitForm = async () => {
   if (form.slug && form.user && form.slug.length > 0 && form.user.length > 0) {
     if (state.available) {
@@ -65,7 +76,7 @@ const submitForm = async () => {
             return;
           }
           flash.addMessage({type: 'success', message: response.message});
-          return response;
+          return ClearForm();
         })
         .catch(error => {
           console.error('error:', error);
