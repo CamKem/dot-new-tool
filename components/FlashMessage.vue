@@ -21,9 +21,9 @@
 </template>
 
 <script setup>
-import {nextTick, onMounted} from "vue";
+import {nextTick, onMounted, onUnmounted} from "vue";
 import useElementById from "../Composables/useElementById";
-import {useFlashStore} from "../Stores/flashStore";
+import {useFlashStore} from "../store/useFlashStore"
 
 let props = defineProps({id: Number});
 const store = useFlashStore();
@@ -36,6 +36,20 @@ onMounted(() => {
     el.value.style.marginBottom = `${(props.id * 80) + 16}px`;
   });
 });
+
+// when the component is unmounted, we want to move the other flash messages down
+// to handle this correctly, we should store the position of the flash message in the store
+// then when the component is unmounted, we can loop through all the flash messages and move them down
+// this way new messages will be added to the correct position
+// onUnmounted(() => {
+//   const el = useElementById(`flash-message-${props.id}`);
+//   const flashMessages = document.querySelectorAll(".flash-message");
+//   flashMessages.forEach((message) => {
+//     if (message.id !== el.value.id) {
+//       message.style.marginBottom = `${parseInt(message.style.marginBottom) - 80}px`;
+//     }
+//   });
+// });
 
 const getFlashMessageClasses = (type) => {
   return {
