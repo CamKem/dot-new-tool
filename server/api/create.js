@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   return {
     success: true,
     message: `Your record has been created! Your slug is ${slug}.`,
-    newRecord: newRecord
+    uri: slug
   };
 
 })

@@ -1,23 +1,36 @@
 <template>
-  <section class="max-w-2xl">
-    <form @submit.prevent="submitForm">
-      <h1>Create new DM link</h1>
-      <div class="input-container">
-        <input v-model="form.slug" name="slug" placeholder="Enter slug" @input="checkSlugDebounced">
-        <CheckBadgeIcon v-show="state.available"
-                        class="absolute stroke-green-200 stroke-1 text-green-500 top-[6px] right-[4px] h-[28px] w-[28px]"/>
-        <XCircleIcon v-show="state.unavailable"
-                     class="absolute stroke-red-200 stroke-1 text-red-500 top-[6px] right-[4px] h-[28px] w-[28px]"/>
-      </div>
-      <input v-model="form.user" name="user" placeholder="Enter Twitter username">
-      <button type="submit">Create your link</button>
-    </form>
-  </section>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <section v-if="!show.success" class="w-96 max-w-2xl">
+      <form @submit.prevent="submitForm">
+        <h1>Create new DM link</h1>
+        <div class="input-container">
+          <input v-model="form.slug" name="slug" placeholder="Enter slug" @input="checkSlugDebounced">
+          <CheckBadgeIcon v-show="state.available"
+                          class="absolute stroke-green-200 stroke-1 text-green-500 top-[6px] right-[4px] h-[28px] w-[28px]"/>
+          <XCircleIcon v-show="state.unavailable"
+                       class="absolute stroke-red-200 stroke-1 text-red-500 top-[6px] right-[4px] h-[28px] w-[28px]"/>
+        </div>
+        <input v-model="form.user" name="user" placeholder="Enter Twitter username">
+        <button type="submit">Create your link</button>
+      </form>
+    </section>
+    <section v-if="show.success" class="success">
+      <XMarkIcon @click="show.success = false" class="absolute top-4 right-4 h-6 w-6 hover:text-red-800 opacity-50 cursor-pointer"/>
+      <h2>Link proxy created</h2>
+      <p>Your link is ready to use. Share it with your friends.</p>
+      <a :href="show.uri"
+          class="text-blue-600 hover:underline cursor-pointer"
+          target="_blank"
+          rel="noopener noreferrer"
+      >{{ show.uri }}</a>
+    </section>
+  </div>
 </template>
 
 <script setup>
 import XCircleIcon from "@heroicons/vue/24/solid/XCircleIcon";
 import CheckBadgeIcon from "@heroicons/vue/24/solid/CheckBadgeIcon";
+import XMarkIcon from "@heroicons/vue/24/solid/xMarkIcon";
 import {debounce} from "lodash-es";
 import {useFlashStore} from '../store/useFlashStore.js';
 
@@ -26,6 +39,11 @@ const flash = useFlashStore();
 const form = reactive({
   slug: '',
   user: ''
+});
+
+const show = reactive({
+  success: false,
+  uri: ''
 });
 
 const state = reactive({
@@ -80,6 +98,8 @@ const submitForm = async () => {
             return;
           }
           flash.addMessage({type: 'success', message: response.message});
+          show.success = true;
+          show.uri = `https://dm.link/${response.uri}`;
           return ClearForm();
         })
         .catch(error => {
@@ -101,7 +121,17 @@ h1 {
   @apply bg-gradient-to-r from-amber-400 to-pink-300 bg-clip-text text-transparent;
 }
 
+h2 {
+  @apply mb-4 text-xl font-bold;
+  @apply bg-gradient-to-tr from-blue-900 to-cyan-700 bg-clip-text text-transparent;
+}
+
 form {
+  @apply flex flex-col items-center rounded-2xl bg-blue-500 p-12 bg-opacity-35 space-y-4;
+}
+
+.success {
+  @apply w-96 max-w-2xl mt-6 relative;
   @apply flex flex-col items-center rounded-2xl bg-blue-500 p-12 bg-opacity-35 space-y-4;
 }
 
